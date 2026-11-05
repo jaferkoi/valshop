@@ -2,7 +2,7 @@ from django import forms
 from applications.models import SkinRequestModel
 
 
-class SkinRequestform(forms.ModelForm):
+class SkinRequestForm(forms.ModelForm):
     class Meta:
         model = SkinRequestModel
-        field = ['nickname', 'message']
+        fields = ['nickname', 'message']
