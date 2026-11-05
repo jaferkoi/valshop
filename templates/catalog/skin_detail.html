@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-dark text-white">
+                <h3 class="mb-0">{{ skin.name }}</h3>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Оружие: {{ skin.weapon.name }}</h5>
+                <p class="card-text text-muted mt-3">
+                    Статус: {{ skin.is_published|yesno:"Опубликован,Скрыт" }}
+                </p>
+            </div>
+        </div>
+        <div class="card shadow">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Оставить заявку на этот скин</h4>
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="text-danger small mt-1">
+                                    {{ field.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    
+                    <button type="submit" class="btn btn-success w-100 mt-3">
+                        Отправить заявку
+                    </button>
+                </form>
+                
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <a href="{% url 'catalog:skin_list' %}" class="btn btn-outline-secondary">
+                &larr; Назад ко всем скинам
+            </a>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}
