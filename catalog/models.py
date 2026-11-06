@@ -1,7 +1,6 @@
 from django.db import models
 from core.models import SlugModel
 
-
 class WeaponModel(SlugModel):
     name = models.CharField(
         verbose_name="название",
@@ -36,3 +35,4 @@ class SkinModel(SlugModel):
 
     def __str__(self):
         return f"Скин: {self.name} -> {self.weapon}"
+

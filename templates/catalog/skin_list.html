@@ -4,6 +4,12 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Доступные скины</h2>
 </div>
+<div class="mb-4">
+    <a href="{% url 'catalog:skin_list' %}" class="btn btn-outline-dark btn-sm mb-2">Все оружия</a>
+    {% for weapon in weapons %}
+        <a href="?weapon={{ weapon.slug }}" class="btn btn-outline-primary btn-sm mb-2">{{ weapon.name }}</a>
+    {% endfor %}
+</div>
 
 <div class="row">
     {% for skin in skins %}
@@ -12,6 +18,7 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ skin.name }}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">Оружие: {{ skin.weapon.name }}</h6>
+                    
                     <a href="{% url 'catalog:skin_detail' skin.slug %}" class="btn btn-primary mt-3">Хочу этот скин</a>
                 </div>
             </div>
@@ -19,7 +26,7 @@
     {% empty %}
         <div class="col-12">
             <div class="alert alert-warning">
-                Пока нет ни одного скина. Добавь их через админку!
+                По вашему запросу ничего не найдено.
             </div>
         </div>
     {% endfor %}
