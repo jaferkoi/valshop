@@ -1,6 +1,41 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Добро пожаловать в Valoshop!</h1>
-    <p>Здесь скоро появится список скинов.</p>
+<div class="p-5 mb-5 bg-dark text-white rounded-3 shadow">
+    <div class="container-fluid py-3">
+        <h1 class="display-5 fw-bold">Valoshop</h1>
+        <p class="col-md-8 fs-4">Твой личный магазин скинов Valorant. Оставь заявку, и, возможно, именно тебе повезет!</p>
+        <a href="{% url 'catalog:skin_list' %}" class="btn btn-primary btn-lg mt-3">Перейти в каталог</a>
+    </div>
+</div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">Последние поступления</h2>
+</div>
+
+<div class="row">
+    {% for skin in skins %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                
+                {% if skin.image %}
+                    <img src="{{ skin.image.url }}" class="card-img-top" alt="{{ skin.name }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                    <div class="bg-secondary text-white d-flex justify-content-center align-items-center" style="height: 200px;">
+                        Нет фото
+                    </div>
+                {% endif %}
+
+                <div class="card-body">
+                    <h5 class="card-title">{{ skin.name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ skin.weapon.name }}</h6>
+                    <a href="{% url 'catalog:skin_detail' skin.slug %}" class="btn btn-outline-primary mt-2 w-100">Оставить заявку</a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">Пока нет доступных скинов. Загляните позже!</div>
+        </div>
+    {% endfor %}
+</div>
 {% endblock %}

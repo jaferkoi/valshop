@@ -1,5 +1,12 @@
-from django.shortcuts import render
+from django.views.generic import ListView
+
+from catalog.models import SkinModel
 
 
-def home(request):
-    return render(request, 'homepage/index.html')
+class HomeView(ListView):
+    model = SkinModel
+    template_name = "homepage/index.html"
+    context_object_name = "skins"
+
+    def get_queryset(self):
+        return super().get_queryset().filter(is_published=True).select_related("weapon").order_by("-created_at")[:3]
