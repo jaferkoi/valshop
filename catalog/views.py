@@ -10,10 +10,11 @@ class SkinListView(ListView):
     model = SkinModel
     template_name = 'catalog/skin_list.html'
     context_object_name = 'skins'
+    paginate_by = 6
 
     def get_queryset(self):
         weapon_slug = self.request.GET.get('weapon')
-        self.queryset = super().get_queryset().filter(is_published=True)
+        self.queryset = super().get_queryset().filter(is_published=True).select_related("weapon")
         if weapon_slug:
             return self.queryset.filter(weapon__slug=weapon_slug)
         return self.queryset

@@ -28,6 +28,11 @@ class SkinModel(SlugModel):
         on_delete=models.CASCADE,
         related_name="skins"
     )
+    image = models.ImageField(
+        upload_to="skins/",
+        blank=True,
+        null=True,
+    )
 
     class Meta:
         verbose_name="скин"
@@ -35,4 +40,3 @@ class SkinModel(SlugModel):
 
     def __str__(self):
         return f"Скин: {self.name} -> {self.weapon}"
-

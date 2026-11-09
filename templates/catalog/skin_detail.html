@@ -7,6 +7,12 @@
             <div class="card-header bg-dark text-white">
                 <h3 class="mb-0">{{ skin.name }}</h3>
             </div>
+            {% if skin.image %}
+                <img src="{{ skin.image.url }}" class="card-img-top" alt="{{ skin.name }}" style="max-height: 400px; object-fit: contain; background-color: #f8f9fa;">
+            {% endif %}
+            <div class="card-header bg-dark text-white">
+                <h3 class="mb-0">{{ skin.name }}</h3>
+            </div>
             <div class="card-body">
                 <h5 class="card-title">Оружие: {{ skin.weapon.name }}</h5>
                 <p class="card-text text-muted mt-3">

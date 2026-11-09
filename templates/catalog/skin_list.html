@@ -15,6 +15,14 @@
     {% for skin in skins %}
         <div class="col-md-4 mb-4">
             <div class="card h-100 shadow-sm">
+                            <div class="card h-100 shadow-sm">
+                {% if skin.image %}
+                    <img src="{{ skin.image.url }}" class="card-img-top" alt="{{ skin.name }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                    <div class="bg-secondary text-white d-flex justify-content-center align-items-center" style="height: 200px;">
+                        Нет фото
+                    </div>
+                {% endif %}
                 <div class="card-body">
                     <h5 class="card-title">{{ skin.name }}</h5>
                     <h6 class="card-subtitle mb-2 text-muted">Оружие: {{ skin.weapon.name }}</h6>
@@ -31,4 +39,46 @@
         </div>
     {% endfor %}
 </div>
+{% if page_obj.has_other_pages %}
+<nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.weapon %}&weapon={{ request.GET.weapon }}{% endif %}">
+                    &laquo; Назад
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">&laquo; Назад</span>
+            </li>
+        {% endif %}
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+            {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}{% if request.GET.weapon %}&weapon={{ request.GET.weapon }}{% endif %}">
+                        {{ num }}
+                    </a>
+                </li>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.weapon %}&weapon={{ request.GET.weapon }}{% endif %}">
+                    Вперед &raquo;
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link">Вперед &raquo;</span>
+            </li>
+        {% endif %}
+
+    </ul>
+</nav>
+{% endif %}
 {% endblock %}
