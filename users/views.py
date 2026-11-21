@@ -34,5 +34,4 @@ def signup(request):
         messages.success(request, "Вы успешно зарегестрировались!")
         return redirect("users:login")
 
-    messages.error(request, "Что-то пошло не так")
     return render(request, "users/signup.html", {"form": form})
