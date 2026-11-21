@@ -1,15 +1,11 @@
-from django.contrib.auth.models import User as Us
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 from applications.models import SkinRequestModel
 
 
-class User(Us):
-    name = models.CharField(
-        "имя",
-        max_length=50,
-        blank=True,
-    )
+class User(AbstractUser):
+    name = models.CharField("имя", max_length=50, blank=True)
 
     class Meta:
         verbose_name = "пользователь"
