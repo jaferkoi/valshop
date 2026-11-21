@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h1 class="h4 mb-4">Профиль</h1>
+
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.name.id_for_label }}">Имя</label>
+                        {{ form.name }}
+                        {% for error in form.name.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ form.image.id_for_label }}">Аватар</label>
+                        {{ form.image }}
+                        {% for error in form.image.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mt-3">
+            <div class="card-body">
+                <h2 class="h5">Текущие данные</h2>
+                <p class="mb-1">Имя: {{ user.name|default:"—" }}</p>
+                {% if user.profile.image %}
+                    <img src="{{ user.profile.image.url }}" alt="Аватар" class="rounded" width="120">
+                {% else %}
+                    <p class="text-muted mb-0">Аватар не загружен</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
