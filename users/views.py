@@ -18,7 +18,7 @@ def profile(request):
 
             return redirect("users:profile")
 
-        messages.error(request, "Проверьте правильность запомлнения формы")
+        messages.error(request, "Проверьте правильность заполнения формы")
 
     else:
         form = ProfileForm(instance=request.user.profile)

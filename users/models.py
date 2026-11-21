@@ -5,6 +5,12 @@ from applications.models import SkinRequestModel
 
 
 class User(Us):
+    name = models.CharField(
+        "имя",
+        max_length=50,
+        blank=True,
+    )
+
     class Meta:
         verbose_name = "пользователь"
         verbose_name_plural = "Пользователи"

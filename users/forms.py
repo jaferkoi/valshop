@@ -3,16 +3,16 @@ from django import forms
 from users.models import User, Profile
 
 
-class ProfileForm(forms.Form):
+class ProfileForm(forms.ModelForm):
+    name = forms.CharField(
+        max_length=50,
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+        required=False,
+    )
+
     class Meta:
         model = Profile
         fields = ("image",)
-
-    name = forms.CharField(
-        max_length=50,
-        widget=forms.TextInput(attrs={"form": "form-control"}),
-        required=False,
-    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -26,5 +26,4 @@ class ProfileForm(forms.Form):
         user.save()
         if commit:
             profile.save()
-
         return profile
