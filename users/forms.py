@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
 
 from users.models import User, Profile
 
@@ -27,3 +28,16 @@ class ProfileForm(forms.ModelForm):
         if commit:
             profile.save()
         return profile
+
+
+class SignUpForm(UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = ("username",)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for field in self.visible_fields():
+            field.field.widget.attrs.update({"class": "form-control"})
+
