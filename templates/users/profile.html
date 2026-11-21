@@ -2,13 +2,38 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-6">
+    <div class="col-md-6 col-lg-5">
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body text-center">
+                {% if user.profile.image %}
+                    <img src="{{ user.profile.image.url }}" alt="Аватар"
+                         class="rounded-circle border mb-3"
+                         width="120" height="120"
+                         style="object-fit: cover;">
+                {% else %}
+                    <div class="rounded-circle bg-secondary d-inline-flex align-items-center justify-content-center mb-3"
+                         width="120" height="120"
+                         style="width: 120px; height: 120px;">
+                        <span class="text-white display-4">{{ user.username|first|upper }}</span>
+                    </div>
+                {% endif %}
+
+                <h1 class="h5 mb-1">{{ user.name|default:user.username }}</h1>
+                <p class="text-muted mb-0">@{{ user.username }}</p>
+            </div>
+        </div>
+
         <div class="card shadow-sm">
             <div class="card-body">
-                <h1 class="h4 mb-4">Профиль</h1>
+                <h2 class="h5 mb-4">Редактирование профиля</h2>
 
                 <form method="post" enctype="multipart/form-data" novalidate>
                     {% csrf_token %}
+
+                    {% for error in form.non_field_errors %}
+                        <div class="alert alert-danger py-2">{{ error }}</div>
+                    {% endfor %}
 
                     <div class="mb-3">
                         <label class="form-label" for="{{ form.name.id_for_label }}">Имя</label>
@@ -21,27 +46,19 @@
                     <div class="mb-3">
                         <label class="form-label" for="{{ form.image.id_for_label }}">Аватар</label>
                         {{ form.image }}
+                        {% if user.profile.image %}
+                            <div class="form-text">Сейчас загружен: {{ user.profile.image.name|cut:"users/" }}</div>
+                        {% endif %}
                         {% for error in form.image.errors %}
                             <div class="text-danger small mt-1">{{ error }}</div>
                         {% endfor %}
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <button type="submit" class="btn btn-primary w-100">Сохранить</button>
                 </form>
             </div>
         </div>
 
-        <div class="card shadow-sm mt-3">
-            <div class="card-body">
-                <h2 class="h5">Текущие данные</h2>
-                <p class="mb-1">Имя: {{ user.name|default:"—" }}</p>
-                {% if user.profile.image %}
-                    <img src="{{ user.profile.image.url }}" alt="Аватар" class="rounded" width="120">
-                {% else %}
-                    <p class="text-muted mb-0">Аватар не загружен</p>
-                {% endif %}
-            </div>
-        </div>
     </div>
 </div>
 {% endblock %}
