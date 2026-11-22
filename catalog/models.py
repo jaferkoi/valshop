@@ -1,5 +1,7 @@
 from django.db import models
+
 from core.models import SlugModel
+
 
 class WeaponModel(SlugModel):
     name = models.CharField(
