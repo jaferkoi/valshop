@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView
 from django.shortcuts import redirect
 from django.contrib import messages
@@ -14,10 +15,13 @@ class SkinListView(ListView):
 
     def get_queryset(self):
         weapon_slug = self.request.GET.get('weapon')
-        self.queryset = super().get_queryset().filter(is_published=True).select_related("weapon")
+        queryset = super().get_queryset().filter(
+            is_published=True,
+            weapon__is_published=True,
+        ).select_related("weapon")
         if weapon_slug:
-            return self.queryset.filter(weapon__slug=weapon_slug)
-        return self.queryset
+            return queryset.filter(weapon__slug=weapon_slug)
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -25,13 +29,16 @@ class SkinListView(ListView):
         return context
 
 
-class SkinDetailView(DetailView):
+class SkinDetailView(LoginRequiredMixin, DetailView):
     model = SkinModel
     template_name = "catalog/skin_detail.html"
     context_object_name = "skin"
 
     def get_queryset(self):
-        return super().get_queryset().filter(is_published=True)
+        return super().get_queryset().filter(
+            is_published=True,
+            weapon__is_published=True,
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -46,6 +53,7 @@ class SkinDetailView(DetailView):
         if form.is_valid():
             skin_request = form.save(commit=False)
             skin_request.skin = self.get_object()
+            skin_request.user = request.user
             skin_request.save()
             messages.success(request, "Заявка успешно отправлена")
             return redirect("catalog:skin_list")
@@ -60,3 +68,8 @@ class WeaponDetailView(DetailView):
 
     def get_queryset(self):
         return super().get_queryset().filter(is_published=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["skins"] = self.object.skins.filter(is_published=True)
+        return context

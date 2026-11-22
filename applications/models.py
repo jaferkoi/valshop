@@ -31,6 +31,11 @@ class SkinRequestModel(BaseModel):
         choices=STATUS_CHOICES,
         default=STATUS_NEW,
     )
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        verbose_name="пользователь",
+    )
 
     def __str__(self):
         return f"Ник: {self.nickname} -> {self.skin}"

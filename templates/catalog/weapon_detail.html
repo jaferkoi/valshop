@@ -3,8 +3,6 @@
 {% block content %}
 <div class="row justify-content-center mt-4">
     <div class="col-md-8">
-        
-        <!-- Карточка оружия -->
         <div class="card shadow mb-4">
             <div class="card-header bg-primary text-white">
                 <h2 class="mb-0">Оружие: {{ weapon.name }}</h2>
@@ -13,8 +11,7 @@
                 <p class="lead">Все доступные скины для этого оружия:</p>
                 
                 <ul class="list-group">
-                    <!-- Используем related_name 'skins' из модели SkinModel -->
-                    {% for skin in weapon.skins.all %}
+                    {% for skin in skins %}
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <a href="{% url 'catalog:skin_detail' skin.slug %}" class="text-decoration-none">
                                 <strong>{{ skin.name }}</strong>
@@ -28,9 +25,7 @@
                 
             </div>
         </div>
-        
         <a href="{% url 'catalog:skin_list' %}" class="btn btn-outline-secondary">&larr; Назад ко всем скинам</a>
-        
     </div>
 </div>
 {% endblock %}

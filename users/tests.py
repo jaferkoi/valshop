@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
+from applications.models import SkinRequestModel
+from catalog.models import SkinModel, WeaponModel
 from users.forms import SignUpForm
 from users.models import Profile
 
@@ -99,7 +101,7 @@ class LoginLogoutTests(TestCase):
             {"username": "abc", "password": "wrong"},
         )
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(response.wsgi_request.user.is_authenticated)
+        self.assertTrue(response.context["form"].errors)
 
     def test_logout_requires_confirmation(self):
         self.client.force_login(self.user)
@@ -153,3 +155,64 @@ class ProfileTests(TestCase):
         self.client.post(reverse("users:profile"), {"name": "Петя"})
         response = self.client.get(reverse("users:profile"))
         self.assertContains(response, "Профиль успешно изменён")
+
+
+class ProfileApplicationsTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(
+            username="jaferkoi", password="StrongPass!42"
+        )
+        cls.other = User.objects.create_user(
+            username="someone", password="StrongPass!42"
+        )
+        cls.weapon = WeaponModel.objects.create(
+            name="вандал", slug="vandal", is_published=True
+        )
+        cls.skin = SkinModel.objects.create(
+            name="прайм", slug="prime", weapon=cls.weapon, is_published=True
+        )
+
+    def _make_request(self, user=None):
+        return SkinRequestModel.objects.create(
+            skin=self.skin,
+            nickname="jaferkoi",
+            message="Хочу скин!",
+            user=user,
+        )
+
+    def test_detail_requires_authentication(self):
+        response = self.client.get(
+            reverse("users:profile_application_detail", kwargs={"pk": 1})
+        )
+        self.assertEqual(response.status_code, 302)
+
+    def test_profile_shows_own_applications(self):
+        self.client.force_login(self.user)
+        own = self._make_request(user=self.user)
+        response = self.client.get(reverse("users:profile"))
+        self.assertIn(own, list(response.context["applications"]))
+
+    def test_profile_hides_foreign_applications(self):
+        self.client.force_login(self.user)
+        foreign = self._make_request(user=self.other)
+        response = self.client.get(reverse("users:profile"))
+        self.assertNotIn(foreign, list(response.context["applications"]))
+
+    def test_foreign_detail_returns_404(self):
+        self.client.force_login(self.user)
+        foreign = self._make_request(user=self.other)
+        response = self.client.get(
+            reverse("users:profile_application_detail", kwargs={"pk": foreign.pk})
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_own_detail_returns_200(self):
+        self.client.force_login(self.user)
+        own = self._make_request(user=self.user)
+        response = self.client.get(
+            reverse("users:profile_application_detail", kwargs={"pk": own.pk})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, own.skin.name)
+        self.assertContains(response, own.nickname)

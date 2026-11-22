@@ -1,11 +1,18 @@
-from django.test import TestCase
+from django.contrib.auth import get_user_model
 from django.contrib.admin.sites import AdminSite
+from django.test import TestCase
 from applications.models import SkinRequestModel
 from applications.admin import SkinRequestAdmin
 from catalog.models import WeaponModel, SkinModel
 
+User = get_user_model()
+
 
 class SkinRequestTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username="testuser", password="pass12345")
+
     def setUp(self):
         self.weapon = WeaponModel.objects.create(name="Vandal", slug="vandal")
         self.skin = SkinModel.objects.create(
@@ -19,7 +26,8 @@ class SkinRequestTest(TestCase):
             skin=self.skin,
             nickname="NoobMaster",
             status=SkinRequestModel.STATUS_NEW,
-            message=""
+            message="",
+            user=self.user,
         )
         self.assertEqual(str(request), "Ник: NoobMaster -> Скин: Prime -> Vandal")
 
@@ -28,6 +36,7 @@ class SkinRequestTest(TestCase):
             skin=self.skin,
             nickname="TestUser",
             message="",
+            user=self.user,
             )
         self.assertEqual(request.status, SkinRequestModel.STATUS_NEW)
 
@@ -42,10 +51,22 @@ class AdminActionTest(TestCase):
             )
         self.admin_site = AdminSite()
         self.admin = SkinRequestAdmin(SkinRequestModel, self.admin_site)
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username="testuser", password="pass12345")
 
     def test_approve_action(self):
-        req1 = SkinRequestModel.objects.create(skin=self.skin, nickname="User1", message="", status=SkinRequestModel.STATUS_NEW)
-        req2 = SkinRequestModel.objects.create(skin=self.skin, nickname="User2", message="", status=SkinRequestModel.STATUS_NEW)
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        requester = User.objects.create_user(username="requester", password="pass")
+        req1 = SkinRequestModel.objects.create(
+            skin=self.skin,
+            nickname="User1",
+            message="Хочу скин!",
+            status=SkinRequestModel.STATUS_NEW,
+            user=requester,
+        )
+        req2 = SkinRequestModel.objects.create(skin=self.skin, nickname="User2", message="", status=SkinRequestModel.STATUS_NEW, user=requester)
         queryset = SkinRequestModel.objects.filter(id__in=[req1.id, req2.id])
         self.admin.approve(request=None, queryset=queryset)
         req1.refresh_from_db()

@@ -39,6 +39,7 @@ class SkinModel(SlugModel):
     class Meta:
         verbose_name="скин"
         verbose_name_plural="скины"
+        ordering=("name",)
 
     def __str__(self):
         return f"Скин: {self.name} -> {self.weapon}"

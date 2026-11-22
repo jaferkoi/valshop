@@ -9,4 +9,7 @@ class HomeView(ListView):
     context_object_name = "skins"
 
     def get_queryset(self):
-        return super().get_queryset().filter(is_published=True).select_related("weapon").order_by("-created_at")[:3]
+        return super().get_queryset().filter(
+            is_published=True,
+            weapon__is_published=True,
+        ).select_related("weapon").order_by("-created_at")[:3]

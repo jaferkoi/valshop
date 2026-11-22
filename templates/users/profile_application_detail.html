@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h2 class="h5 mb-0">Заявка на скин</h2>
+                <span class="badge
+                    {% if application.status == 'new' %}bg-warning text-dark
+                    {% elif application.status == 'approved' %}bg-success
+                    {% else %}bg-danger{% endif %}">
+                    {{ application.get_status_display }}
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label text-muted small">Скин</label>
+                    <h4 class="mb-0">{{ application.skin }}</h4>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-muted small">Ник в игре</label>
+                    <p class="mb-0">{{ application.nickname }}</p>
+                </div>
+
+                {% if application.message %}
+                    <div class="mb-3">
+                        <label class="form-label text-muted small">Комментарий</label>
+                        <p class="mb-0">{{ application.message }}</p>
+                    </div>
+                {% endif %}
+
+                {% if application.created %}
+                    <div class="text-muted small mb-3">
+                        Создана: {{ application.created|date:"d.m.Y H:i" }}
+                    </div>
+                {% endif %}
+
+                <hr class="my-4">
+                <a href="{% url 'users:profile' %}" class="btn btn-outline-secondary">
+                    ← Назад к профилю
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

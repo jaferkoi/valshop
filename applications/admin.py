@@ -7,6 +7,7 @@ class SkinRequestAdmin(admin.ModelAdmin):
     list_display=("nickname", "skin", "status", "created_at")
     list_filter=("status",)
     search_fields=("nickname", "skin__name")
+    readonly_fields=("user",)
 
     @admin.action(description="✅ Одобрить заявки")
     def approve(self, request, queryset):

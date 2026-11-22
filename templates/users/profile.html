@@ -24,6 +24,34 @@
             </div>
         </div>
 
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h2 class="h5 mb-3">Мои заявки</h2>
+
+                {% if applications %}
+                    <ul class="list-group list-group-flush">
+                        {% for application in applications %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <span>
+                                    <strong>{{ application.skin }}</strong>
+                                    <small class="text-muted">— {{ application.nickname }}</small>
+                                </span>
+                                <span class="badge
+                                    {% if application.status == 'new' %}bg-warning text-dark
+                                    {% elif application.status == 'approved' %}bg-success
+                                    {% else %}bg-danger{% endif %}">
+                                    {{ application.get_status_display }}
+                                </span>
+                                <a href="{% url 'users:profile_application_detail' application.pk %}"
+                                class="stretched-link text-decoration-none">→</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted mb-0">Заявок пока нет.</p>
+                {% endif %}
+            </div>
+        </div>
         <div class="card shadow-sm">
             <div class="card-body">
                 <h2 class="h5 mb-4">Редактирование профиля</h2>

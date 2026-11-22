@@ -1,7 +1,10 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render, redirect
+from django.views import generic
 
+from applications.models import SkinRequestModel
 from users.forms import ProfileForm, SignUpForm
 
 @login_required
@@ -23,7 +26,8 @@ def profile(request):
     else:
         form = ProfileForm(instance=request.user.profile)
 
-    return render(request, "users/profile.html", {"form": form})
+    applications = SkinRequestModel.objects.filter(user=request.user).order_by("-pk")
+    return render(request, "users/profile.html", {"form": form, "applications": applications})
 
 
 def signup(request):
@@ -35,3 +39,12 @@ def signup(request):
         return redirect("users:login")
 
     return render(request, "users/signup.html", {"form": form})
+
+
+class ProfileApplicationsDetailView(LoginRequiredMixin, generic.DetailView):
+    model = SkinRequestModel
+    template_name = "users/profile_application_detail.html"
+    context_object_name = "application"
+
+    def get_queryset(self):
+        return SkinRequestModel.objects.filter(user=self.request.user)
