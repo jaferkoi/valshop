@@ -4,7 +4,7 @@
 Никаких реальных транзакций — только веселье, каталог скинов и админка для модерации заявок. 
 
 ## 🚀 Стек технологий
-* **Backend:** Python 3.14, Django 6.1
+* **Backend:** Python 3.14, Django 6.1.3
 * **База данных:** SQLite (для разработки)
 * **Frontend:** HTML, Bootstrap 5 (через CDN)
 * **Безопасность:** python-dotenv (секреты вынесены в `.env`)
@@ -21,6 +21,12 @@
 ```bash
    git clone https://github.com/jaferkoi/valshop.git
    cd valoshop
+```
+
+## ✅ Тесты
+
+```bash
+py manage.py test
 ```
 
 🪟 Для Windows
